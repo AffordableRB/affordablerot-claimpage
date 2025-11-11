@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Affordable.Garden Delivery Page</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+  
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      max-width: 900px;
+      width: 100%;
+      text-align: center;
+      animation: slideUp 0.6s ease-out;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .logo {
+      width: 100px;
+      height: auto;
+      margin: 0 auto 25px;
+    }
+    .logo img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      display: block;
+    }
+    h1 {
+      color: #333; margin-bottom: 10px;
+      font-size: 32px; font-weight: 700;
+    }
+    .subtitle {
+      color: #666; margin-bottom: 35px; font-size: 16px;
+    }
+    .step {
+      display: none; animation: fadeIn 0.5s ease-in;
+    }
+    .step.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .form-group {
+      margin-bottom: 25px; text-align: left;
+    }
+    label {
+      display: block; margin-bottom: 10px;
+      color: #333; font-weight: 600; font-size: 16px;
+    }
+    input {
+      width: 100%; padding: 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: #fafafa;
+    }
+    input:focus {
+      outline: none;
+      border-color: #4CAF50;
+      box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+      background: white;
+    }
+    input.error {
+      border-color: #f44336;
+      background: #fff5f5;
+    }
+    input.valid {
+      border-color: #4CAF50;
+      background: #f0fff4;
+    }
+    .btn {
+      background: linear-gradient(45deg, #4CAF50, #66BB6A);
+      color: white; border: none;
+      padding: 16px 32px; border-radius: 12px;
+      font-size: 16px; font-weight: 600;
+      cursor: pointer; transition: all 0.3s ease;
+      width: 100%; margin-bottom: 15px;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(76, 175, 80, 0.4);
+    }
+    .btn:disabled {
+      background: #ccc; cursor: not-allowed;
+      transform: none; box-shadow: none;
+    }
+    .btn.secondary {
+      background: #f5f5f5; color: #666;
+      border: 2px solid #e0e0e0;
+    }
+    .btn.secondary:hover {
+      background: #eeeeee;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .btn.delivery {
+      background: linear-gradient(45deg, #1565C0, #1976D2);
+      font-size: 18px; 
+      padding: 18px 36px;
+    }
+    .btn.delivery:hover {
+      box-shadow: 0 12px 25px rgba(21, 101, 192, 0.4);
+    }
+    .btn.friend-request {
+      background: linear-gradient(45deg, #4CAF50, #66BB6A);
+      font-size: 16px;
+      padding: 16px 32px;
+      margin-bottom: 20px;
+    }
+    .btn.friend-request:hover {
+      box-shadow: 0 12px 25px rgba(76, 175, 80, 0.4);
+    }
+    .profile-avatar {
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      border: 4px solid #4CAF50;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .profile-name {
+      font-size: 24px; font-weight: 700;
+      color: #333; margin-bottom: 10px;
+    }
+    .profile-question {
+      font-size: 18px; color: #555;
+      margin-bottom: 25px;
+    }
+    .profile-buttons {
+      display: flex;
+      gap: 15px;
+      width: 100%;
+    }
+    .profile-buttons .btn {
+      margin-bottom: 0;
+      flex: 1;
+    }
+    .loading {
+      display: inline-block; width: 20px; height: 20px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #4CAF50;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 10px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .error-message {
+      background: #ffebee;
+      color: #c62828;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border-left: 4px solid #f44336;
+      text-align: left;
+    }
+    .success-message {
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border-left: 4px solid #4caf50;
+      text-align: left;
+    }
+    .validation-message {
+      font-size: 14px;
+      margin-top: 8px;
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+    .validation-message.error {
+      background: #ffebee;
+      color: #c62828;
+      border: 1px solid #ffcdd2;
+    }
+    .validation-message.success {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #c8e6c9;
+    }
+    .note {
+      background: #cce0ff;
+      color: #0b3d91;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      font-size: 14px;
+      border-left: 4px solid #1952d4;
+    }
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 30px;
+      gap: 10px;
+    }
+    .step-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ddd;
+      transition: background 0.3s ease;
+    }
+    .step-dot.active {
+      background: #4CAF50;
+    }
+    .step-dot.completed {
+      background: #66BB6A;
+    }
+    .summary-card {
+      background: #f8f9fa;
+      padding: 25px;
+      border-radius: 15px;
+      margin: 25px 0;
+      border: 2px solid #e9ecef;
+      text-align: left;
+    }
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #e9ecef;
+    }
+    .summary-item:last-child {
+      border-bottom: none;
+    }
+    .summary-label {
+      font-weight: 600;
+      color: #555;
+    }
+    .summary-value {
+      color: #333;
+      font-weight: 500;
+    }
+    .order-status {
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border-left: 4px solid #4caf50;
+    }
+    .registration-status {
+      background: #e3f2fd;
+      color: #1565c0;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 15px 0;
+      font-size: 14px;
+      border-left: 4px solid #2196f3;
+    }
+    .registration-id {
+      background: #f3e5f5;
+      color: #7b1fa2;
+      padding: 10px;
+      border-radius: 8px;
+      margin: 10px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      word-break: break-all;
+    }
+    .completion-message {
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border-left: 4px solid #4caf50;
+      text-align: center;
+    }
+    .completion-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 768px) {
+      .container {
+        max-width: 500px;
+        padding: 30px 20px;
+      }
+      .profile-buttons {
+        flex-direction: column;
+      }
+      .profile-buttons .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="https://cdn.shopify.com/s/files/1/0943/2311/4269/files/sittingon-Photoroom-Photoroom.png?v=1754625898" alt="Affordable Garden Raccoon Logo" />
+    </div>
+    <h1>Affordable.Garden</h1>
+    <p class="subtitle">Claiming Your Order</p>
+
+    <div class="step-indicator">
+      <div class="step-dot active" id="dot1"></div>
+      <div class="step-dot" id="dot2"></div>
+      <div class="step-dot" id="dot3"></div>
+      <div class="step-dot" id="dot4"></div>
+    </div>
+
+    <!-- Step 1: Order Verification -->
+    <div class="step active" id="step1">
+      <div style="max-width: 500px; margin: 0 auto;">
+        <div class="form-group">
+          <label for="orderNumber">Order Number:</label>
+          <input
+            type="text"
+            id="orderNumber"
+            placeholder="Example: AG-1002"
+            required
+            autocomplete="off"
+          />
+          <div id="orderValidation" class="validation-message" style="display: none;"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="emailAddress">Email Address:</label>
+          <input
+            type="email"
+            id="emailAddress"
+            placeholder="your.email@example.com"
+            required
+            autocomplete="email"
+          />
+          <div id="emailValidation" class="validation-message" style="display: none;"></div>
+        </div>
+
+        <button class="btn" onclick="verifyOrder()" id="verifyOrderBtn">
+          Verify Order
+        </button>
+      </div>
+      
+      <div class="note">
+        <strong>Required:</strong> Enter your order number and email address from your order. These must match our records to proceed.
+      </div>
+    </div>
+
+    <!-- Step 2: Roblox Username Verification -->
+    <div class="step" id="step2">
+      <div style="max-width: 500px; margin: 0 auto;">
+        <div class="order-status" id="orderStatus"></div>
+        
+        <div id="profileSection" style="display: none; margin-bottom: 30px;">
+          <div class="profile-card">
+            <div id="profileContent"></div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="robloxUsername">Enter your Roblox Username:</label>
+          <input
+            type="text"
+            id="robloxUsername"
+            placeholder="YourRobloxUsername"
+            required
+            autocomplete="off"
+          />
+        </div>
+
+        <button class="btn" onclick="verifyUsername()" id="verifyBtn">
+          Verify Username
+        </button>
+        <button class="btn secondary" onclick="goBack(1)">Go Back</button>
+      </div>
+      
+      <div class="note">
+        Make sure your username is spelled exactly right (case-sensitive)
+      </div>
+    </div>
+
+    <!-- Step 3: Join Delivery Server -->
+    <div class="step" id="step3">
+      <h2 style="color: #333; margin-bottom: 25px;">Ready for Delivery!</h2>
+      
+      <div class="summary-card">
+        <div class="summary-item">
+          <span class="summary-label">Order Number:</span>
+          <span class="summary-value" id="summaryOrder"></span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Email Address:</span>
+          <span class="summary-value" id="summaryEmail"></span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Roblox Username:</span>
+          <span class="summary-value" id="summaryUsername"></span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Status:</span>
+          <span class="summary-value" style="color: #4CAF50; font-weight: bold;">✅ Verified</span>
+        </div>
+      </div>
+
+      <div class="registration-status" id="registrationStatus" style="display: none;">
+        Registration Status: <span id="registrationStatusText">Processing...</span>
+      </div>
+
+      <div class="registration-id" id="registrationIdDisplay" style="display: none;">
+        <strong>Registration ID:</strong> <span id="registrationIdText"></span>
+      </div>
+
+      <div style="display: flex; justify-content: center; margin: 30px 0;">
+        <img id="summaryAvatar" class="profile-avatar" src="" alt="Profile Picture" />
+      </div>
+      
+      <div style="color: #666; margin-bottom: 30px;">
+        Click the button below to friend our delivery staff, then join our private Roblox server for your delivery.
+      </div>
+
+      <button class="btn friend-request" onclick="friendDeliveryStaff()">
+        👥 Friend meow82412 (Delivery Staff)
+      </button>
+
+      <button class="btn delivery" onclick="joinDeliveryServer()" id="joinServerBtn">
+        🚀 Complete Order (Join Delivery Server)
+      </button>
+      
+      <button class="btn secondary" onclick="goBack(2)" style="margin-top: 10px;">Go Back</button>
+
+      <div class="note" style="margin-top: 20px; background: #cce0ff; color: #0b3d91; border-left: 4px solid #1952d4;">
+        <strong>Important:</strong> Please friend our delivery staff first, then join the server and wait for a staff member to deliver your items. Mobile players can join directly from the delivery staff's profile.
+      </div>
+    </div>
+
+    <!-- Step 4: Order Complete -->
+    <div class="step" id="step4">
+      <div class="completion-message">
+        <div class="completion-title">🎉 Order Complete!</div>
+        <p>Your items will now be successfully delivered. Pre-orders will be delivered once our store opens (Hours: 9AM-12AM EST). We hope you enjoyed your experience with Affordable.Garden!</p>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-item">
+          <span class="summary-label">Order Number:</span>
+          <span class="summary-value" id="finalSummaryOrder"></span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Roblox Username:</span>
+          <span class="summary-value" id="finalSummaryUsername"></span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Registration ID:</span>
+          <span class="summary-value" id="finalRegistrationId"></span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Status:</span>
+          <span class="summary-value" style="color: #4CAF50; font-weight: bold;">✅ Completed</span>
+        </div>
+      </div>
+
+      <div class="note" style="background: #e8f5e9; color: #2e7d32; border-left: 4px solid #4caf50;">
+        <strong>Thank you for choosing Affordable.Garden!</strong> If you have any issues with claiming your items, please contact our support team with your order number.
+      </div>
+    </div>
+
+    <div id="errorMessage" class="error-message" style="display: none"></div>
+    <div id="successMessage" class="success-message" style="display: none"></div>
+  </div>
+
+  <script>
+    let currentUserData = null;
+    let currentOrderData = null;
+    let currentStep = 1;
+    let currentRegistrationId = null;
+
+    function updateStepIndicator(step) {
+      for (let i = 1; i <= 4; i++) {
+        const dot = document.getElementById(`dot${i}`);
+        dot.classList.remove('active', 'completed');
+        
+        if (i < step) {
+          dot.classList.add('completed');
+        } else if (i === step) {
+          dot.classList.add('active');
+        }
+      }
+    }
+
+    function showStep(stepNumber) {
+      currentStep = stepNumber;
+      document.querySelectorAll('.step').forEach((step) =>
+        step.classList.remove('active')
+      );
+      document.getElementById('step' + stepNumber).classList.add('active');
+      updateStepIndicator(stepNumber);
+      
+      document.getElementById('errorMessage').style.display = 'none';
+      document.getElementById('successMessage').style.display = 'none';
+    }
+
+    function displayUserProfile(userData) {
+      const profileSection = document.getElementById('profileSection');
+      const profileContent = document.getElementById('profileContent');
+      
+      profileSection.style.display = 'block';
+      
+      const avatarImg = document.createElement('img');
+      avatarImg.className = 'profile-avatar';
+      avatarImg.alt = `${userData.username}'s Avatar`;
+      
+      avatarImg.onerror = function() {
+        const fallbackUrls = [
+          `https://www.roblox.com/bust-thumbnail/image?userId=${userData.userId}&width=150&height=150&format=png`,
+          `https://www.roblox.com/headshot-thumbnail/image?userId=${userData.userId}&width=150&height=150&format=png&t=${Date.now()}`,
+          `https://www.roblox.com/headshot-thumbnail/image?userId=${userData.userId}&width=100&height=100&format=png`,
+        ];
+        
+        const currentSrc = this.src;
+        const nextIndex = fallbackUrls.findIndex(url => url.split('&t=')[0] === currentSrc.split('&t=')[0]) + 1;
+        
+        if (nextIndex < fallbackUrls.length) {
+          this.src = fallbackUrls[nextIndex];
+        } else {
+          this.src = 'data:image/svg+xml,' + encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 150 150">
+              <rect width="150" height="150" fill="#4CAF50"/>
+              <circle cx="75" cy="60" r="25" fill="white"/>
+              <rect x="55" y="90" width="40" height="40" rx="20" fill="white"/>
+              <text x="75" y="130" font-family="Arial" font-size="10" fill="white" text-anchor="middle">${userData.username}</text>
+            </svg>
+          `);
+        }
+      };
+      
+      const avatarUrl = userData.avatar.includes('?') 
+        ? `${userData.avatar}&t=${Date.now()}`
+        : `${userData.avatar}?t=${Date.now()}`;
+        
+      avatarImg.src = avatarUrl;
+      
+      const profileName = document.createElement('div');
+      profileName.className = 'profile-name';
+      profileName.textContent = userData.username;
+      
+      const profileQuestion = document.createElement('div');
+      profileQuestion.className = 'profile-question';
+      profileQuestion.textContent = 'Is this your Roblox account?';
+      
+      const buttonsDiv = document.createElement('div');
+      buttonsDiv.className = 'profile-buttons';
+      
+      const confirmBtn = document.createElement('button');
+      confirmBtn.className = 'btn';
+      confirmBtn.textContent = 'Yes, that\'s me!';
+      confirmBtn.onclick = () => {
+        document.getElementById('summaryOrder').textContent = currentOrderData.orderNumber;
+        document.getElementById('summaryUsername').textContent = currentUserData.username;
+        document.getElementById('summaryEmail').textContent = currentOrderData.email;
+        document.getElementById('summaryAvatar').src = currentUserData.avatar;
+        confirmProfile();
+      };
+      
+      const retryBtn = document.createElement('button');
+      retryBtn.className = 'btn secondary';
+      retryBtn.textContent = 'Try again';
+      retryBtn.onclick = () => goBack(2);
+      
+      buttonsDiv.appendChild(confirmBtn);
+      buttonsDiv.appendChild(retryBtn);
+      
+      profileContent.innerHTML = '';
+      profileContent.appendChild(avatarImg);
+      profileContent.appendChild(profileName);
+      profileContent.appendChild(profileQuestion);
+      profileContent.appendChild(buttonsDiv);
+    }
+
+    function showError(message) {
+      const errorEl = document.getElementById('errorMessage');
+      errorEl.textContent = message;
+      errorEl.style.display = 'block';
+      setTimeout(() => {
+        errorEl.style.display = 'none';
+      }, 10000);
+    }
+
+    function showSuccess(message) {
+      const successEl = document.getElementById('successMessage');
+      successEl.textContent = message;
+      successEl.style.display = 'block';
+    }
+
+    function showValidation(elementId, message, isValid) {
+      const validationEl = document.getElementById(elementId);
+      const inputEl = document.getElementById(elementId.replace('Validation', ''));
+      
+      if (validationEl) {
+        validationEl.textContent = message;
+        validationEl.className = `validation-message ${isValid ? 'success' : 'error'}`;
+        validationEl.style.display = 'block';
+      }
+      
+      if (inputEl) {
+        inputEl.className = isValid ? 'valid' : 'error';
+      }
+    }
+
+    function validateEmailFormat(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
+    async function verifyOrder() {
+      const orderNumber = document.getElementById('orderNumber').value.trim();
+      const email = document.getElementById('emailAddress').value.trim();
+      const verifyBtn = document.getElementById('verifyOrderBtn');
+
+      document.getElementById('orderValidation').style.display = 'none';
+      document.getElementById('emailValidation').style.display = 'none';
+      document.getElementById('orderNumber').className = '';
+      document.getElementById('emailAddress').className = '';
+
+      if (!orderNumber) {
+        showValidation('orderValidation', 'Please enter your order number', false);
+        return;
+      }
+
+      if (!email) {
+        showValidation('emailValidation', 'Please enter your email address', false);
+        return;
+      }
+
+      if (!validateEmailFormat(email)) {
+        showValidation('emailValidation', 'Please enter a valid email format', false);
+        return;
+      }
+
+      verifyBtn.innerHTML = '<span class="loading"></span>Verifying Order...';
+      verifyBtn.disabled = true;
+
+      try {
+        const response = await fetch('/api/verify', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ 
+            orderNumber: orderNumber,
+            email: email,
+            action: 'verify_order'
+          }),
+        });
+
+        const responseText = await response.text();
+        let orderData;
+        
+        try {
+          orderData = JSON.parse(responseText);
+        } catch (parseError) {
+          throw new Error(`Server returned invalid response format`);
+        }
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            showError(orderData.error || 'Order not found. Please check your order number and email address.');
+          } else if (response.status === 400) {
+            showError(orderData.error || 'Invalid order information provided.');
+          } else {
+            showError(orderData.error || `Server error: ${response.status}`);
+          }
+          return;
+        }
+
+        currentOrderData = orderData;
+        
+        const orderStatus = document.getElementById('orderStatus');
+        orderStatus.innerHTML = `
+          <strong>✅ Order Verified!</strong><br>
+          Order #${orderData.orderNumber} found for ${orderData.email}<br>
+          <em>Items: ${orderData.items || 'Digital delivery items'}</em>
+        `;
+        
+        showStep(2);
+        
+      } catch (error) {
+        console.error('Order verification error:', error);
+        showError(`Error verifying order: ${error.message}`);
+      } finally {
+        verifyBtn.innerHTML = 'Verify Order';
+        verifyBtn.disabled = false;
+      }
+    }
+
+    async function verifyUsername() {
+      const username = document.getElementById('robloxUsername').value.trim();
+      const verifyBtn = document.getElementById('verifyBtn');
+
+      if (!username) {
+        showError('Please enter a username');
+        return;
+      }
+
+      if (username.length < 3 || username.length > 20) {
+        showError('Username must be between 3-20 characters');
+        return;
+      }
+
+      if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+        showError('Username can only contain letters, numbers, and underscores');
+        return;
+      }
+
+      verifyBtn.innerHTML = '<span class="loading"></span>Verifying...';
+      verifyBtn.disabled = true;
+
+      try {
+        const response = await fetch('/api/verify', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ 
+            username: username,
+            action: 'verify_username' 
+          }),
+        });
+
+        const responseText = await response.text();
+        let userData;
+        
+        try {
+          userData = JSON.parse(responseText);
+        } catch (parseError) {
+          throw new Error(`Invalid JSON response: ${parseError.message}`);
+        }
+
+        if (!response.ok) {
+          showError(userData.error || `Server error: ${response.status}`);
+          return;
+        }
+
+        currentUserData = {
+          username: userData.username,
+          avatar: userData.avatarUrl,
+          userId: userData.userId,
+        };
+
+        displayUserProfile(currentUserData);
+      } catch (error) {
+        console.error('Verification error:', error);
+        showError(`Error: ${error.message}`);
+      } finally {
+        verifyBtn.innerHTML = 'Verify Username';
+        verifyBtn.disabled = false;
+      }
+    }
+
+    function confirmProfile() {
+      if (!currentUserData || !currentOrderData) return;
+      showStep(3);
+    }
+
+    function friendDeliveryStaff() {
+      showSuccess('Opening meow82412\'s profile for friend request...');
+      
+      setTimeout(() => {
+        window.open('https://www.roblox.com/users/8579897302/profile', '_blank');
+        
+        setTimeout(() => {
+          alert(`Profile opened! If it didn't open automatically, copy this link:\n\nhttps://www.roblox.com/users/8579897302/profile\n\nPlease send a friend request to meow82412 before joining the delivery server.`);
+        }, 1000);
+      }, 500);
+    }
+
+    async function joinDeliveryServer() {
+      if (!currentUserData || !currentOrderData) {
+        showError('Missing required information');
+        return;
+      }
+
+      const joinBtn = document.getElementById('joinServerBtn');
+      const registrationStatus = document.getElementById('registrationStatus');
+      const registrationStatusText = document.getElementById('registrationStatusText');
+      const registrationIdDisplay = document.getElementById('registrationIdDisplay');
+      const registrationIdText = document.getElementById('registrationIdText');
+
+      registrationStatus.style.display = 'block';
+      registrationStatusText.textContent = 'Saving registration...';
+      
+      joinBtn.innerHTML = '<span class="loading"></span>Registering & Opening Server...';
+      joinBtn.disabled = true;
+
+      const finalData = {
+        order: currentOrderData,
+        roblox: currentUserData,
+        timestamp: new Date().toISOString(),
+        serverJoinTime: new Date().toISOString()
+      };
+      
+      showSuccess(`Welcome ${currentUserData.username}! Processing your registration...`);
+      
+      try {
+        const response = await fetch('/api/verify', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ 
+            action: 'register_delivery',
+            deliveryData: finalData
+          }),
+        });
+
+        const responseText = await response.text();
+        
+        let result;
+        try {
+          result = JSON.parse(responseText);
+        } catch (parseError) {
+          throw new Error('Invalid response format from server');
+        }
+
+        if (response.ok && result.success) {
+          registrationStatusText.textContent = `✅ Registration saved successfully!`;
+          registrationStatus.style.background = '#e8f5e9';
+          registrationStatus.style.color = '#2e7d32';
+          registrationStatus.style.borderLeftColor = '#4caf50';
+          
+          currentRegistrationId = result.registrationId;
+          registrationIdText.textContent = currentRegistrationId;
+          registrationIdDisplay.style.display = 'block';
+          
+          showSuccess(`✅ Registration complete! ID: ${currentRegistrationId} - Opening server...`);
+          
+        } else {
+          registrationStatusText.textContent = `❌ Registration failed: ${result.error}`;
+          registrationStatus.style.background = '#ffebee';
+          registrationStatus.style.color = '#c62828';
+          registrationStatus.style.borderLeftColor = '#f44336';
+          
+          if (result.canContinue) {
+            showError('⚠️ Registration failed, but you can still join the server');
+          } else {
+            showError(`Registration error: ${result.error || 'Unknown error'}`);
+          }
+        }
+      } catch (error) {
+        console.error('Registration request failed:', error);
+        registrationStatusText.textContent = `❌ Connection failed: ${error.message}`;
+        registrationStatus.style.background = '#ffebee';
+        registrationStatus.style.color = '#c62828';
+        registrationStatus.style.borderLeftColor = '#f44336';
+        showError('⚠️ Could not save registration - continuing to server anyway...');
+      }
+      
+      setTimeout(() => {
+        showSuccess(`🚀 Opening delivery server for ${currentUserData.username}...`);
+        
+        setTimeout(() => {
+          window.open('https://www.roblox.com/share?code=3f541f34634d5a448517bd05693722a1&type=Server', '_blank');
+          
+          setTimeout(() => {
+            const idText = currentRegistrationId ? 
+              `\n\n📋 Registration ID: ${currentRegistrationId}` : 
+              '\n\n⚠️ Registration ID not available (save may have failed)';
+            
+            alert(`Server opened! If it didn't open automatically, copy this link:\n\nhttps://www.roblox.com/share?code=3f541f34634d5a448517bd05693722a1&type=Server\n\nPlease wait in the server for a staff member to deliver your items.${idText}`);
+            
+            setTimeout(() => {
+              proceedToCompletionStep();
+            }, 2000);
+          }, 1000);
+        }, 1500);
+      }, 1000);
+
+      setTimeout(() => {
+        joinBtn.innerHTML = '🚀 Complete Order (Join Delivery Server)';
+        joinBtn.disabled = false;
+      }, 3000);
+    }
+
+    function proceedToCompletionStep() {
+      document.getElementById('finalSummaryOrder').textContent = currentOrderData.orderNumber;
+      document.getElementById('finalSummaryUsername').textContent = currentUserData.username;
+      document.getElementById('finalRegistrationId').textContent = currentRegistrationId || 'N/A';
+      
+      showStep(4);
+    }
+
+    function goBack(toStep) {
+      if (toStep === 1) {
+        currentOrderData = null;
+        document.getElementById('orderNumber').value = '';
+        document.getElementById('emailAddress').value = '';
+        document.getElementById('orderValidation').style.display = 'none';
+        document.getElementById('emailValidation').style.display = 'none';
+        document.getElementById('orderNumber').className = '';
+        document.getElementById('emailAddress').className = '';
+      } else if (toStep === 2) {
+        currentUserData = null;
+        document.getElementById('robloxUsername').value = '';
+        const profileSection = document.getElementById('profileSection');
+        const profileContent = document.getElementById('profileContent');
+        profileSection.style.display = 'none';
+        profileContent.innerHTML = '';
+        
+        const registrationStatus = document.getElementById('registrationStatus');
+        const registrationIdDisplay = document.getElementById('registrationIdDisplay');
+        registrationStatus.style.display = 'none';
+        registrationIdDisplay.style.display = 'none';
+        currentRegistrationId = null;
+      }
+      
+      showStep(toStep);
+    }
+
+    document.getElementById('orderNumber').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        document.getElementById('emailAddress').focus();
+      }
+    });
+
+    document.getElementById('emailAddress').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        verifyOrder();
+      }
+    });
+
+    document.getElementById('robloxUsername').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        verifyUsername();
+      }
+    });
+
+    document.getElementById('emailAddress').addEventListener('input', function(e) {
+      const email = e.target.value.trim();
+      const validationEl = document.getElementById('emailValidation');
+      
+      if (email.length === 0) {
+        validationEl.style.display = 'none';
+        e.target.className = '';
+        return;
+      }
+      
+      if (validateEmailFormat(email)) {
+        e.target.className = 'valid';
+        validationEl.style.display = 'none';
+      } else {
+        e.target.className = 'error';
+        showValidation('emailValidation', 'Please enter a valid email format', false);
+      }
+    });
+  </script>
+</body>
+</html>
