@@ -176,7 +176,7 @@
       text-align: left;
     }
     .success-message {
-      background: #e8f5e9; /* GREEN success */
+      background: #e8f5e9;
       color: #2e7d32;
       padding: 15px;
       border-radius: 10px;
@@ -292,6 +292,16 @@
       background: #D14549;
     }
 
+    .note {
+      color: #dddddd;
+      font-size: 14px;
+      margin-top: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
     @media (max-width: 768px) {
       .container {
         max-width: 500px;
@@ -309,7 +319,7 @@
 <body>
   <div class="container">
     <div class="logo">
-      <img src="https://cdn.shopify.com/s/files/1/0943/2311/4269/files/sittingon-Photoroom-Photoroom.png?v=1754625898" alt="AffordableRot Logo" />
+      <img src="https://cdn.shopify.com/s/files/1/0779/4301/3634/files/speedy_car.png?v=1761607237" alt="AffordableRot Logo" />
     </div>
 
     <h1>AffordableRot</h1>
@@ -322,11 +332,7 @@
       <div class="step-dot" id="dot4"></div>
     </div>
 
-    <!-- ✅ All JS preserved below (unchanged except text colors) -->
-    <!-- ✅ Entire file continues exactly like your original -->
-    <!-- ✅ Nothing removed -->
-
-    <!-- ✅ STEP 1 -->
+    <!-- STEP 1 -->
     <div class="step active" id="step1">
       <div style="max-width: 500px; margin: 0 auto;">
         <div class="form-group">
@@ -363,7 +369,7 @@
       </div>
     </div>
 
-    <!-- ✅ STEP 2 -->
+    <!-- STEP 2 -->
     <div class="step" id="step2">
       <div style="max-width: 500px; margin: 0 auto;">
         <div class="order-status" id="orderStatus"></div>
@@ -396,7 +402,7 @@
       </div>
     </div>
 
-    <!-- ✅ STEP 3 -->
+    <!-- STEP 3 -->
     <div class="step" id="step3">
       <h2 style="color:white; margin-bottom: 25px;">Ready for Delivery!</h2>
 
@@ -450,7 +456,7 @@
       </div>
     </div>
 
-    <!-- ✅ STEP 4 -->
+    <!-- STEP 4 -->
     <div class="step" id="step4">
       <div class="completion-message">
         <div class="completion-title" style="font-size:20px;font-weight:700;margin-bottom:10px;">
@@ -488,7 +494,6 @@
     <div id="successMessage" class="success-message" style="display: none"></div>
   </div>
 
-  <!-- ✅ FULL JAVASCRIPT BELOW (UNCHANGED LOGIC) -->
   <script>
     let currentUserData = null;
     let currentOrderData = null;
