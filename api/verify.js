@@ -1,4 +1,4 @@
-// api/verify.js - Simplified Production API (Review tracking removed)
+// api/verify-rot.js - AffordableRot API Endpoint
 import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import crypto from 'crypto';
@@ -11,12 +11,12 @@ let isInitialized = false;
 function initFirebase() {
   if (!isInitialized) {
     const requiredEnvVars = [
-      'FIREBASE_API_KEY',
-      'FIREBASE_AUTH_DOMAIN', 
-      'FIREBASE_PROJECT_ID',
-      'FIREBASE_STORAGE_BUCKET',
-      'FIREBASE_MESSAGING_SENDER_ID',
-      'FIREBASE_APP_ID'
+      'FIREBASE_ROT_API_KEY',
+      'FIREBASE_ROT_AUTH_DOMAIN', 
+      'FIREBASE_ROT_PROJECT_ID',
+      'FIREBASE_ROT_STORAGE_BUCKET',
+      'FIREBASE_ROT_MESSAGING_SENDER_ID',
+      'FIREBASE_ROT_APP_ID'
     ];
     
     const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
@@ -25,12 +25,12 @@ function initFirebase() {
     }
 
     const firebaseConfig = {
-      apiKey: process.env.FIREBASE_API_KEY,
-      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-      appId: process.env.FIREBASE_APP_ID
+      apiKey: process.env.FIREBASE_ROT_API_KEY,
+      authDomain: process.env.FIREBASE_ROT_AUTH_DOMAIN,
+      projectId: process.env.FIREBASE_ROT_PROJECT_ID,
+      storageBucket: process.env.FIREBASE_ROT_STORAGE_BUCKET,
+      messagingSenderId: process.env.FIREBASE_ROT_MESSAGING_SENDER_ID,
+      appId: process.env.FIREBASE_ROT_APP_ID
     };
     
     if (getApps().length === 0) {
@@ -62,7 +62,7 @@ async function saveToFirestore(deliveryData) {
       // Order details
       orderNumber: deliveryData.order?.orderNumber || 'N/A',
       email: deliveryData.order?.email || 'N/A',
-      orderItems: deliveryData.order?.items || 'Digital Items',
+      orderItems: deliveryData.order?.items || 'Brainrots',
       orderTotal: deliveryData.order?.total || 'N/A',
       orderCurrency: deliveryData.order?.currency || 'USD',
       orderId: deliveryData.order?.orderId || null,
@@ -80,25 +80,25 @@ async function saveToFirestore(deliveryData) {
       completedAt: null,
       
       // System metadata
-      processedBy: 'delivery_system_v2.3',
-      source: 'affordable_garden_delivery',
-      apiVersion: '2.3',
+      processedBy: 'affordablerot_delivery_v1.0',
+      source: 'affordablerot_brainrot_delivery',
+      apiVersion: '1.0',
       userAgent: deliveryData.userAgent || null,
       ipAddress: deliveryData.ipAddress || null,
       stepCompletionTimes: deliveryData.stepCompletionTimes || null,
       totalProcessingTime: Date.now() - startTime
     };
 
-    const docRef = await addDoc(collection(db, 'delivery_requests'), docData);
+    const docRef = await addDoc(collection(db, 'rot_delivery_requests'), docData);
     const elapsed = Date.now() - startTime;
     
     return {
       success: true,
       registrationId,
       firestoreId: docRef.id,
-      collection: 'delivery_requests',
+      collection: 'rot_delivery_requests',
       timing: elapsed,
-      docPath: `delivery_requests/${docRef.id}`
+      docPath: `rot_delivery_requests/${docRef.id}`
     };
 
   } catch (error) {
@@ -226,7 +226,7 @@ async function handleOrderVerification(req, res, orderNumber, email) {
 
   try {
     // Check if we have required environment variables
-    if (!process.env.SHOPIFY_SHOP_DOMAIN || !process.env.SHOPIFY_ACCESS_TOKEN) {
+    if (!process.env.SHOPIFY_ROT_SHOP_DOMAIN || !process.env.SHOPIFY_ROT_ACCESS_TOKEN) {
       return res.status(500).json({ error: 'Server configuration error' });
     }
 
@@ -285,24 +285,24 @@ async function handleOrderVerification(req, res, orderNumber, email) {
 
 // SHOPIFY SEARCH FUNCTION
 async function findShopifyOrder(orderNumber, email) {
-  const shopDomain = process.env.SHOPIFY_SHOP_DOMAIN;
-  const accessToken = process.env.SHOPIFY_ACCESS_TOKEN;
-  const apiVersion = process.env.SHOPIFY_API_VERSION || '2024-01';
+  const shopDomain = process.env.SHOPIFY_ROT_SHOP_DOMAIN;
+  const accessToken = process.env.SHOPIFY_ROT_ACCESS_TOKEN;
+  const apiVersion = process.env.SHOPIFY_ROT_API_VERSION || '2024-01';
   
   // Smart domain handling - check if .myshopify.com is already included
   const baseUrl = shopDomain.includes('.myshopify.com') 
     ? `https://${shopDomain}` 
     : `https://${shopDomain}.myshopify.com`;
   
-  // Shopify order numbers can have different formats
+  // Shopify order numbers can have different formats - AR prefix for AffordableRot
   const searchQueries = [
     orderNumber,
     orderNumber.replace(/^#/, ''),
     `#${orderNumber.replace(/^#/, '')}`,
-    orderNumber.replace(/^AG-/, ''),
-    `AG-${orderNumber.replace(/^(AG-|#)/, '')}`,
+    orderNumber.replace(/^AR-/, ''),
+    `AR-${orderNumber.replace(/^(AR-|#)/, '')}`,
     orderNumber.replace(/^AF/, ''),
-    `AF${orderNumber.replace(/^(AF|AG-|#)/, '')}`
+    `AF${orderNumber.replace(/^(AF|AR-|#)/, '')}`
   ];
 
   const uniqueSearchQueries = [...new Set(searchQueries)];
@@ -358,8 +358,8 @@ async function findShopifyOrder(orderNumber, email) {
         const matchingOrder = data.orders.find(order => {
           return uniqueSearchQueries.some(query => {
             return order.name === query || 
-                   order.order_number?.toString() === query.replace(/^(#|AG-|AF)/, '') ||
-                   (order.name && order.name.includes('AG-') && order.name === `AG-${query.replace(/^(#|AG-|AF)/, '')}`);
+                   order.order_number?.toString() === query.replace(/^(#|AR-|AF)/, '') ||
+                   (order.name && order.name.includes('AR-') && order.name === `AR-${query.replace(/^(#|AR-|AF)/, '')}`);
           });
         });
         
@@ -433,7 +433,7 @@ function validateOrderForDelivery(order) {
 
 function formatOrderItems(lineItems) {
   if (!lineItems || lineItems.length === 0) {
-    return 'Digital Items';
+    return 'Brainrots';
   }
   
   return lineItems.map(item => {
@@ -565,10 +565,10 @@ async function handleUsernameVerification(req, res, username) {
 function generateDeliveryId() {
   const timestamp = Date.now();
   const random = Math.random().toString(36).substr(2, 6).toUpperCase();
-  return `AG_${timestamp}_${random}`;
+  return `AR_${timestamp}_${random}`;
 }
 
-// MAIN HANDLER - Simplified
+// MAIN HANDLER
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
