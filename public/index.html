@@ -323,7 +323,7 @@
     </div>
 
     <h1>AffordableRot</h1>
-    <p class="subtitle">Claiming Your Order</p>
+    <p class="subtitle">Claiming Your Brainrot Order</p>
 
     <div class="step-indicator">
       <div class="step-dot active" id="dot1"></div>
@@ -442,7 +442,7 @@
       </div>
 
       <button class="btn friend-request" onclick="friendDeliveryStaff()">
-        👥 Friend meow82412 (Delivery Staff)
+        👥 Friend DELIVERY_STAFF_USERNAME (Delivery Staff)
       </button>
 
       <button class="btn delivery" onclick="joinDeliveryServer()" id="joinServerBtn">
@@ -462,7 +462,7 @@
         <div class="completion-title" style="font-size:20px;font-weight:700;margin-bottom:10px;">
           🎉 Order Complete!
         </div>
-        <p>Your items will be delivered shortly by our staff.</p>
+        <p>Your brainrots will be delivered shortly by our staff.</p>
       </div>
 
       <div class="summary-card">
@@ -499,6 +499,11 @@
     let currentOrderData = null;
     let currentStep = 1;
     let currentRegistrationId = null;
+
+    // PLACEHOLDER VALUES - UPDATE THESE
+    const DELIVERY_STAFF_USERNAME = 'DELIVERY_STAFF_USERNAME'; // TODO: Replace with actual username
+    const DELIVERY_STAFF_USERID = 'DELIVERY_STAFF_USERID'; // TODO: Replace with actual user ID
+    const PRIVATE_SERVER_LINK = 'INSERT_PRIVATE_SERVER_LINK'; // TODO: Replace with actual server link
 
     function updateStepIndicator(step) {
       for (let i = 1; i <= 4; i++) {
@@ -666,7 +671,7 @@
       verifyBtn.disabled = true;
 
       try {
-        const response = await fetch('/api/verify', {
+        const response = await fetch('/api/verify-rot', {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
@@ -705,7 +710,7 @@
         orderStatus.innerHTML = `
           <strong>✅ Order Verified!</strong><br>
           Order #${orderData.orderNumber} found for ${orderData.email}<br>
-          <em>Items: ${orderData.items || 'Digital delivery items'}</em>
+          <em>Items: ${orderData.items || 'Brainrots'}</em>
         `;
         
         showStep(2);
@@ -742,7 +747,7 @@
       verifyBtn.disabled = true;
 
       try {
-        const response = await fetch('/api/verify', {
+        const response = await fetch('/api/verify-rot', {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
@@ -790,13 +795,13 @@
     }
 
     function friendDeliveryStaff() {
-      showSuccess('Opening meow82412\'s profile for friend request...');
+      showSuccess(`Opening ${DELIVERY_STAFF_USERNAME}'s profile for friend request...`);
       
       setTimeout(() => {
-        window.open('https://www.roblox.com/users/8579897302/profile', '_blank');
+        window.open(`https://www.roblox.com/users/${DELIVERY_STAFF_USERID}/profile`, '_blank');
         
         setTimeout(() => {
-          alert(`Profile opened! If it didn't open automatically, copy this link:\n\nhttps://www.roblox.com/users/8579897302/profile\n\nPlease send a friend request to meow82412 before joining the delivery server.`);
+          alert(`Profile opened! If it didn't open automatically, copy this link:\n\nhttps://www.roblox.com/users/${DELIVERY_STAFF_USERID}/profile\n\nPlease send a friend request to ${DELIVERY_STAFF_USERNAME} before joining the delivery server.`);
         }, 1000);
       }, 500);
     }
@@ -829,7 +834,7 @@
       showSuccess(`Welcome ${currentUserData.username}! Processing your registration...`);
       
       try {
-        const response = await fetch('/api/verify', {
+        const response = await fetch('/api/verify-rot', {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
@@ -887,14 +892,14 @@
         showSuccess(`🚀 Opening delivery server for ${currentUserData.username}...`);
         
         setTimeout(() => {
-          window.open('https://www.roblox.com/share?code=3f541f34634d5a448517bd05693722a1&type=Server', '_blank');
+          window.open(PRIVATE_SERVER_LINK, '_blank');
           
           setTimeout(() => {
             const idText = currentRegistrationId ? 
               `\n\n📋 Registration ID: ${currentRegistrationId}` : 
               '\n\n⚠️ Registration ID not available (save may have failed)';
             
-            alert(`Server opened! If it didn't open automatically, copy this link:\n\nhttps://www.roblox.com/share?code=3f541f34634d5a448517bd05693722a1&type=Server\n\nPlease wait in the server for a staff member to deliver your items.${idText}`);
+            alert(`Server opened! If it didn't open automatically, copy this link:\n\n${PRIVATE_SERVER_LINK}\n\nPlease wait in the server for a staff member to deliver your brainrots.${idText}`);
             
             setTimeout(() => {
               proceedToCompletionStep();
