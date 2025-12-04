@@ -684,22 +684,32 @@
           }),
         });
 
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        
         const responseText = await response.text();
+        console.log('Raw response:', responseText);
+        
         let orderData;
         
         try {
           orderData = JSON.parse(responseText);
+          console.log('Parsed response:', orderData);
         } catch (parseError) {
-          throw new Error(`Server returned invalid response format`);
+          console.error('JSON parse error:', parseError);
+          throw new Error(`Server returned invalid response format. Raw response: ${responseText.substring(0, 200)}`);
         }
 
         if (!response.ok) {
+          const errorMessage = orderData.error || orderData.message || orderData.details || 'An error occurred';
           if (response.status === 404) {
-            showError(orderData.error || 'Order not found. Please check your order number and email address.');
+            showError(`Order not found: ${errorMessage}`);
           } else if (response.status === 400) {
-            showError(orderData.error || 'Invalid order information provided.');
+            showError(`Invalid order: ${errorMessage}`);
+          } else if (response.status === 500) {
+            showError(`Server error: ${errorMessage}`);
           } else {
-            showError(orderData.error || `Server error: ${response.status}`);
+            showError(`Error (${response.status}): ${errorMessage}`);
           }
           return;
         }
@@ -717,7 +727,8 @@
         
       } catch (error) {
         console.error('Order verification error:', error);
-        showError(`Error verifying order: ${error.message}`);
+        const errorMsg = error.message || String(error);
+        showError(`Error verifying order: ${errorMsg}. Please check your connection and try again.`);
       } finally {
         verifyBtn.innerHTML = 'Verify Order';
         verifyBtn.disabled = false;
